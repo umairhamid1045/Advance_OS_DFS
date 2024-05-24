@@ -1,3 +1,4 @@
+# run_all.py
 import subprocess
 import time
 
@@ -12,7 +13,7 @@ def run_client():
 
 if __name__ == '__main__':
     print("************Run_all.py***************")
-    node_ports = [5001, 5002]
+    node_ports = [5001, 5002, 5003, 5004]
     node_processes = [start_node(port) for port in node_ports]
     time.sleep(1)  # Give nodes some time to start
     coordinator_process = start_coordinator()

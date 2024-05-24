@@ -1,4 +1,3 @@
-# client.py
 import requests
 
 def upload_file(file_path, coordinator_url):
@@ -18,6 +17,6 @@ def download_file(filename, coordinator_url, save_path):
 
 if __name__ == '__main__':
     print("************Client.py***************")
-    coordinator_url = 'http://localhost:5003'
+    coordinator_url = 'http://localhost:5005'
     print(upload_file('example.txt', coordinator_url))
-    print(download_file('file', coordinator_url, 'downloaded_example.txt'))
+    print(download_file('example.txt', coordinator_url, 'downloaded_example.txt'))
