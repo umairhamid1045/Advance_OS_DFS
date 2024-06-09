@@ -1,0 +1,33 @@
+#heading{
+    text-align: center;
+}
+#container{
+    margin: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 40vh;
+}
+#clientName{
+    margin: 1vh;
+}
+#setName{
+    margin-bottom: 3vh;
+}
+#uploadForm{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+#fileInput{
+    position: relative;
+    left: 82px;
+}
+#uploadButton{
+    margin-top: 2vh;
+}
+#downloadButton{
+    margin-top: 2vh;
+}

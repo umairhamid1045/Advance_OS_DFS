@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Distributed File System</title>
+    <link rel="stylesheet" href={{ url_for('static', filename='style.css') }} />
+  </head>
+  <body>
+    <h1 id="heading">Distributed File System</h1>
+    <div id="container">
+      <label for="clientName" id="clientNameLabel">Enter your name:</label>
+      <input type="text" id="clientName" required />
+      <button id="setName">Set Name</button>
+      <form id="uploadForm">
+        <input type="file" id="fileInput" name="file" disabled required />
+        <button type="submit" id="uploadButton" disabled>Upload File</button>
+      </form>
+      <p id="clientNameP"></p>
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Enter filename to download"
+        required
+      />
+      <button id="downloadButton" disabled>Download File</button>
+      <p id="message"></p>
+    </div>
+
+    <script>
+      document.getElementById("setName").addEventListener("click", function () {
+        a = document.getElementById("clientName").value;
+        if (a.length > 0) {
+          document.getElementById("clientNameP").innerText = a;
+          document.getElementById("uploadButton").disabled = false;
+          document.getElementById("downloadButton").disabled = false;
+          document.getElementById("fileInput").disabled = false;
+        }
+      });
+
+      document
+        .getElementById("uploadForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          document.getElementById("message").innerText = "File Upload Started";
+          document.getElementById("uploadButton").disabled = true;
+          document.getElementById("downloadButton").disabled = true;
+          const clientName = document.getElementById("clientName").value;
+          if (!clientName) {
+            alert("Please enter your name.");
+            return;
+          }
+          const fileInput = document.getElementById("fileInput");
+          const formData = new FormData();
+          formData.append("file", fileInput.files[0]);
+          formData.append("clientName", clientName);
+
+          fetch("/upload", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.text())
+            .then((data) => {
+              document.getElementById("message").textContent = data;
+              document.getElementById("uploadButton").disabled = false;
+              document.getElementById("downloadButton").disabled = false;
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              document.getElementById("message").textContent =
+                "Error uploading file";
+            });
+        });
+
+      document
+        .getElementById("downloadButton")
+        .addEventListener("click", function () {
+          document.getElementById("message").innerText =
+            "File Download Started";
+          document.getElementById("uploadButton").disabled = true;
+          document.getElementById("downloadButton").disabled = true;
+
+          const clientName = document.getElementById("clientName").value;
+          if (!clientName) {
+            alert("Please enter your name.");
+            return;
+          }
+          const filename = document.getElementById("searchInput").value;
+          fetch(`/download/${clientName}/${filename}`)
+            .then((response) => {
+              if (response.status === 200) {
+                return response.blob();
+              } else {
+                throw new Error("File not found");
+              }
+            })
+            .then((blob) => {
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.style.display = "none";
+              a.href = url;
+              a.download = filename;
+              document.body.appendChild(a);
+              a.click();
+              window.URL.revokeObjectURL(url);
+              document.getElementById("message").innerText =
+                "File Downloaded Successfully!";
+              document.getElementById("uploadButton").disabled = true;
+              document.getElementById("downloadButton").disabled = true;
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              document.getElementById("message").textContent =
+                "Error downloading file";
+            });
+        });
+    </script>
+  </body>
+</html>
